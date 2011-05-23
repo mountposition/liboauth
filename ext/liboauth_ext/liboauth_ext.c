@@ -35,8 +35,13 @@ static VALUE rb_liboauth_sign_url(VALUE klass, VALUE url, VALUE method, VALUE re
     req_url = oauth_serialize_url_sep(argc, 0, argv, "&", 1);
 
     VALUE oauth_hdr = rb_str_new(0,0);
-    rb_str_cat2( oauth_hdr, "OAuth realm=\"\"");
-    rb_str_cat2( oauth_hdr, req_hdr);
+    rb_str_cat2( oauth_hdr, "OAuth ");
+    if( req_hdr && 0 < strlen(req_hdr) && req_hdr[0] == ',' && req_hdr[1] == ' ' ){
+        rb_str_cat2( oauth_hdr, req_hdr + 2);
+    }
+    else{
+        rb_str_cat2( oauth_hdr, req_hdr);
+    }
 
     VALUE result_hash = rb_hash_new();
     rb_hash_aset(result_hash, sym_request_url, rb_str_new2( req_url ));
